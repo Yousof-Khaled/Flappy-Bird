@@ -37,6 +37,10 @@ Window {
                 easing.type: Easing.InCirc
                 from: bird.y
                 to: rootItem.height - bird.height
+
+                onFinished: {
+                    console.log("game over")
+                }
             }
 
 
@@ -46,10 +50,10 @@ Window {
                 NumberAnimation {
                     target: bird
                     property: "y"
-                    duration: 500
+                    duration: 500 * Math.min(70, bird.y - 0) / 70
                     easing.type: Easing.OutCirc
                     from: bird.y
-                    to: bird.y - 70
+                    to: Math.max(bird.y - 70, 0)
                 }
 
                 onFinished: {
