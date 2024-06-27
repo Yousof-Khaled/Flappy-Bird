@@ -1,4 +1,5 @@
 import QtQuick
+import Flappy_Bird
 
 Window {
     width: 640
@@ -15,6 +16,10 @@ Window {
             id: bird
 
             function jumpUp() {
+                if (!Driver.started) {
+                    Driver.started = true
+                }
+
                 falling.stop()
                 jump.restart()
             }
@@ -31,7 +36,7 @@ Window {
                 target: bird
                 property: "y"
                 duration: {
-                    Math.max(400 * ((rootItem.height - bird.height) - bird.y) / 100, 0)
+                    Math.max(300 * ((rootItem.height - bird.height) - bird.y) / 100, 0)
                 }
 
                 easing.type: Easing.InCirc
@@ -62,7 +67,7 @@ Window {
             }
 
             Component.onCompleted: {
-                falling.running = true
+                // falling.running = Driver.started
             }
         }
 
@@ -72,6 +77,51 @@ Window {
             onClicked: {
                 bird.jumpUp()
             }
+        }
+
+        Repeater {
+            id: obstacles
+
+            model: Driver.model
+            delegate: Item {
+                Rectangle {
+                    width: 20
+                    height: model.gapY
+
+                    color: "blue"
+                    y: 0
+                    x: model.X
+                }
+
+                Rectangle {
+                    width: 20
+                    height: Driver.windowHeight - y
+
+                    color: "blue"
+                    y: model.gapY + Driver.gapHeight
+                    x: model.X
+                }
+            }
+        }
+
+        Keys.onPressed: (event) => {
+            if (event.key === Qt.Key_Space) {
+                bird.jumpUp()
+            }
+        }
+
+        onWidthChanged: {
+            Driver.windowRightmost = width
+        }
+
+        onHeightChanged: {
+            Driver.windowHeight = height
+        }
+
+        Component.onCompleted: {
+            Driver.maxNumberOfObstacles = 5
+            Driver.gapHeight = 100
+            forceActiveFocus()
         }
     }
 }
