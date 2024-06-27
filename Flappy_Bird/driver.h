@@ -20,6 +20,9 @@ class Driver : public QObject
 	Q_PROPERTY(int windowHeight READ windowHeight WRITE setWindowHeight NOTIFY windowHeightChanged FINAL)
 	Q_PROPERTY(int gapHeight READ gapHeight WRITE setGapHeight NOTIFY gapHeightChanged FINAL) // obstacle gap height
 
+	Q_PROPERTY(int birdX WRITE setBirdX NOTIFY birdXChanged FINAL);
+	Q_PROPERTY(int birdY WRITE setBirdY NOTIFY birdYChanged FINAL)
+
 public:
 	explicit Driver(QObject *parent = nullptr);
 	~Driver();
@@ -41,6 +44,9 @@ public:
 	int maxNumberOfObstacles() { return m_maxNumberOfObstacles; }
 	void setMaxNumberOfObstacles(int newMaxNumObstacles);
 
+	void setBirdX(int newX);
+	void setBirdY(int newY);
+
 signals:
 	void startedChanged(bool s);
 	void windowRightmostChanged(int rightMostPoint);
@@ -48,6 +54,8 @@ signals:
 	void windowHeightChanged(int newWindowHeight);
 	void gapHeightChanged(int newGapHeight);
 	void maxNumberOfObstaclesChanged(int newMaxNumObstacles);
+	void birdXChanged(int x);
+	void birdYChanged(int y);
 
 private:
 	QTimer *m_timer;

@@ -19,7 +19,7 @@ Driver::Driver(QObject *parent)
 			m_model->addLast();
 		}
 
-		qInfo() << "timeout occurred";
+		// qInfo() << "timeout occurred";
 	});
 
 	QObject::connect(this, &Driver::windowRightmostChanged, m_model, &Model::setWindowRightMost);
@@ -74,5 +74,21 @@ void Driver::setMaxNumberOfObstacles(int newMaxNumObstacles)
 	if (m_maxNumberOfObstacles != newMaxNumObstacles) {
 		m_maxNumberOfObstacles = newMaxNumObstacles;
 		emit maxNumberOfObstaclesChanged(m_maxNumberOfObstacles);
+	}
+}
+
+void Driver::setBirdX(int newX)
+{
+	if (m_birdX != newX) {
+		m_birdX = newX;
+		emit birdXChanged(m_birdX);
+	}
+}
+
+void Driver::setBirdY(int newY)
+{
+	if (m_birdY != newY) {
+		m_birdY = newY;
+		emit birdXChanged(m_birdY);
 	}
 }

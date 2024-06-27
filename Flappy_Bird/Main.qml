@@ -69,6 +69,14 @@ Window {
             Component.onCompleted: {
                 // falling.running = Driver.started
             }
+
+            onXChanged: {
+                console.info("yousof : x changed");
+            }
+
+            onYChanged: {
+                console.info("yousof : y changed : " + y);
+            }
         }
 
         MouseArea {

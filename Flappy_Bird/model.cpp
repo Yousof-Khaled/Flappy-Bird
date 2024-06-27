@@ -67,7 +67,7 @@ void Model::moveLeft()
 	for (auto& o: obstacles) {
 		o.x -= 1;
 	}
-	trace();
+	// trace();
 	emit dataChanged(createIndex(0, 0), createIndex(int(obstacles.size()) - 1, 0), {XPositionRole});
 }
 
