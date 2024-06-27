@@ -3,28 +3,31 @@
 
 #include <QAbstractListModel>
 #include <deque>
+#include <QRandomGenerator>
 
 struct Obstacle {
-	static int gapHeigh;
 	static int width;
 
 	int x;
+	int gapY;
 
-	Obstacle(int x): x(x)
+	Obstacle(int x, int gapY): x(x), gapY(gapY)
 	{
 
 	}
 };
+// int Obstacle::gapHeight = 0;
 
 class Model : public QAbstractListModel
 {
 	Q_OBJECT
 
 public:
-	explicit Model(int maxNumObstacles, QObject *parent = nullptr);
+	explicit Model(QObject *parent = nullptr);
 
 	enum {
-		XPositionRole = Qt::UserRole
+		XPositionRole = Qt::UserRole,
+		gapYRole
 	};
 
 	// Basic functionality:
@@ -48,6 +51,9 @@ public:
 
 public slots:
 	void setWindowRightMost(int rightMostPoint);
+	void setWindowHeight(int newWindowHeight);
+	void setGapHeight(int newGapHeight);
+	void setMaxNumberOfObstacles(int newNumObstacles);
 
 private:
 	virtual QHash<int, QByteArray> roleNames() const override;
@@ -55,7 +61,11 @@ private:
 	std::deque<Obstacle> obstacles;
 
 	int m_windowRightmost;
+	int m_windowHeight;
 	int m_maxNumberOfObstacles;
+	int m_gapHeight;
+
+	QRandomGenerator *randomGenerator = QRandomGenerator::global();
 };
 
 #endif // MODEL_H

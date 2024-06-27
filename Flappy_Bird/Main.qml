@@ -83,12 +83,24 @@ Window {
             id: obstacles
 
             model: Driver.model
-            delegate: Rectangle {
-                width: 20
-                height: 20
-                color: "blue"
-                y: 100
-                x: model.X
+            delegate: Item {
+                Rectangle {
+                    width: 20
+                    height: model.gapY
+
+                    color: "blue"
+                    y: 0
+                    x: model.X
+                }
+
+                Rectangle {
+                    width: 20
+                    height: Driver.windowHeight - y
+
+                    color: "blue"
+                    y: model.gapY + Driver.gapHeight
+                    x: model.X
+                }
             }
         }
 
@@ -102,8 +114,13 @@ Window {
             Driver.windowRightmost = width
         }
 
+        onHeightChanged: {
+            Driver.windowHeight = height
+        }
+
         Component.onCompleted: {
-            Driver.windowRightmost = width
+            Driver.maxNumberOfObstacles = 5
+            Driver.gapHeight = 100
             forceActiveFocus()
         }
     }

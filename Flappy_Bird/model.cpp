@@ -1,9 +1,9 @@
 #include "model.h"
 
-Model::Model(int maxNumObstacles, QObject *parent)
+Model::Model(QObject *parent)
 	: QAbstractListModel(parent)
 {
-	m_maxNumberOfObstacles = maxNumObstacles;
+
 }
 
 int Model::rowCount(const QModelIndex &parent) const
@@ -27,6 +27,8 @@ QVariant Model::data(const QModelIndex &index, int role) const
 	switch(role) {
 	case XPositionRole:
 		return obstacles[index.row()].x;
+	case gapYRole:
+		return obstacles[index.row()].gapY;
 	default:
 		break;
 	}
@@ -56,7 +58,7 @@ bool Model::setData(const QModelIndex &index, const QVariant &value, int role)
 void Model::trace()
 {
 	for (auto &o : obstacles) {
-		qInfo() << o.x << ", ";
+		qInfo() << o.x << ", gapY: " << o.gapY;
 	}
 }
 
@@ -89,8 +91,8 @@ void Model::addLast()
 	if (obstacles.size() == m_maxNumberOfObstacles) {
 		removeFirst();
 	}
-	beginInsertRows(QModelIndex(), 0, 0);
-	obstacles.emplace_back(m_windowRightmost);
+	beginInsertRows(QModelIndex(), obstacles.size(), obstacles.size());
+	obstacles.emplace_back(m_windowRightmost, randomGenerator->bounded(10, m_windowHeight - m_gapHeight - 50));
 	endInsertRows();
 }
 
@@ -101,11 +103,33 @@ void Model::setWindowRightMost(int rightMostPoint)
 	}
 }
 
+void Model::setWindowHeight(int newWindowHeight)
+{
+	if (m_windowHeight != newWindowHeight) {
+		m_windowHeight = newWindowHeight;
+	}
+}
+
+void Model::setGapHeight(int newGapHeight)
+{
+	if (m_gapHeight != newGapHeight) {
+		m_gapHeight = newGapHeight;
+	}
+}
+
+void Model::setMaxNumberOfObstacles(int newNumObstacles)
+{
+	if (m_maxNumberOfObstacles != newNumObstacles) {
+		m_maxNumberOfObstacles = newNumObstacles;
+	}
+}
+
 QHash<int, QByteArray> Model::roleNames() const
 {
 	QHash<int, QByteArray> names;
 
 	names[XPositionRole] = "X";
+	names[gapYRole] = "gapY";
 
 	return names;
 }
