@@ -1,4 +1,5 @@
 import QtQuick
+import Flappy_Bird
 
 Window {
     width: 640
@@ -15,6 +16,10 @@ Window {
             id: bird
 
             function jumpUp() {
+                if (!Driver.started) {
+                    Driver.started = true
+                }
+
                 falling.stop()
                 jump.restart()
             }
@@ -31,7 +36,7 @@ Window {
                 target: bird
                 property: "y"
                 duration: {
-                    Math.max(400 * ((rootItem.height - bird.height) - bird.y) / 100, 0)
+                    Math.max(300 * ((rootItem.height - bird.height) - bird.y) / 100, 0)
                 }
 
                 easing.type: Easing.InCirc
@@ -62,7 +67,7 @@ Window {
             }
 
             Component.onCompleted: {
-                falling.running = true
+                // falling.running = Driver.started
             }
         }
 
@@ -72,6 +77,34 @@ Window {
             onClicked: {
                 bird.jumpUp()
             }
+        }
+
+        Repeater {
+            id: obstacles
+
+            model: Driver.model
+            delegate: Rectangle {
+                width: 20
+                height: 20
+                color: "blue"
+                y: 100
+                x: model.X
+            }
+        }
+
+        Keys.onPressed: (event) => {
+            if (event.key === Qt.Key_Space) {
+                bird.jumpUp()
+            }
+        }
+
+        onWidthChanged: {
+            Driver.windowRightmost = width
+        }
+
+        Component.onCompleted: {
+            Driver.windowRightmost = width
+            forceActiveFocus()
         }
     }
 }
