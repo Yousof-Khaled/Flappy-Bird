@@ -6,17 +6,15 @@
 #include <QRandomGenerator>
 
 struct Obstacle {
-	static int width;
-
 	int x;
 	int gapY;
+	bool passed = false;
 
 	Obstacle(int x, int gapY): x(x), gapY(gapY)
 	{
 
 	}
 };
-// int Obstacle::gapHeight = 0;
 
 class Model : public QAbstractListModel
 {
@@ -49,11 +47,27 @@ public:
 
 	void addLast();
 
+	bool isCollided(int bird_x1, int bird_x2, int bird_y1, int bird_y2, int model_x, int model_gap_y);
+
 public slots:
 	void setWindowRightMost(int rightMostPoint);
 	void setWindowHeight(int newWindowHeight);
+
 	void setGapHeight(int newGapHeight);
+
+	void setObstableWidth(int newObstacleWidth);
 	void setMaxNumberOfObstacles(int newNumObstacles);
+
+	void setBirdX(int newX);
+	void setBirdY(int newY);
+	void setBirdWidth(int newWidth);
+	void setBirdHeight(int newHeight);
+
+	void checkForCollision();
+
+signals:
+	void shouldCheckForCollision();
+	void detectedCollisions();
 
 private:
 	virtual QHash<int, QByteArray> roleNames() const override;
@@ -64,6 +78,13 @@ private:
 	int m_windowHeight;
 	int m_maxNumberOfObstacles;
 	int m_gapHeight;
+	int m_obstacleWidth;
+	int m_obstacleStep = 1;
+
+	int m_birdX;
+	int m_birdY;
+	int m_birdWidth;
+	int m_birdHeight;
 
 	QRandomGenerator *randomGenerator = QRandomGenerator::global();
 };

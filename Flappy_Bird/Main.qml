@@ -10,6 +10,12 @@ Window {
     Item {
         id: rootItem
 
+        function gameOver() {
+            console.log("game over")
+        }
+
+        property int obstacleWidth: 20
+
         anchors.fill: parent
 
         Rectangle {
@@ -30,7 +36,6 @@ Window {
             y: rootItem.height / 4
             x: 50
 
-
             NumberAnimation {
                 id: falling
                 target: bird
@@ -42,10 +47,6 @@ Window {
                 easing.type: Easing.InCirc
                 from: bird.y
                 to: rootItem.height - bird.height
-
-                onFinished: {
-                    console.log("game over")
-                }
             }
 
 
@@ -66,16 +67,15 @@ Window {
                 }
             }
 
-            Component.onCompleted: {
-                // falling.running = Driver.started
-            }
-
             onXChanged: {
-                console.info("yousof : x changed");
+                Driver.birdX = x;
             }
 
             onYChanged: {
-                console.info("yousof : y changed : " + y);
+                Driver.birdY = y;
+                if (y + height === rootItem.height) {
+                    rootItem.gameOver()
+                }
             }
         }
 
@@ -93,7 +93,7 @@ Window {
             model: Driver.model
             delegate: Item {
                 Rectangle {
-                    width: 20
+                    width: rootItem.obstacleWidth
                     height: model.gapY
 
                     color: "blue"
@@ -127,9 +127,23 @@ Window {
         }
 
         Component.onCompleted: {
-            Driver.maxNumberOfObstacles = 5
+            Driver.birdWidth = bird.width
+            Driver.birdHeight = bird.height
+            Driver.birdX = bird.x;
+            Driver.birdY = bird.y;
+
+            Driver.maxNumberOfObstacles = 10
             Driver.gapHeight = 100
+            Driver.obstableWidth = rootItem.obstacleWidth
             forceActiveFocus()
+        }
+
+        Connections {
+            target: Driver
+
+            function onGameOver() {
+                rootItem.gameOver();
+            }
         }
     }
 }

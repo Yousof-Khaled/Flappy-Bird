@@ -25,7 +25,18 @@ Driver::Driver(QObject *parent)
 	QObject::connect(this, &Driver::windowRightmostChanged, m_model, &Model::setWindowRightMost);
 	QObject::connect(this, &Driver::windowHeightChanged, m_model, &Model::setWindowHeight);
 	QObject::connect(this, &Driver::gapHeightChanged, m_model, &Model::setGapHeight);
+	QObject::connect(this, &Driver::obstableWidthChanged, m_model, &Model::setObstableWidth);
+
 	QObject::connect(this, &Driver::maxNumberOfObstaclesChanged, m_model, &Model::setMaxNumberOfObstacles);
+
+	QObject::connect(this, &Driver::birdXChanged, m_model, &Model::setBirdX);
+	QObject::connect(this, &Driver::birdYChanged, m_model, &Model::setBirdY);
+	QObject::connect(this, &Driver::birdWidthChanged, m_model, &Model::setBirdWidth);
+	QObject::connect(this, &Driver::birdHeightChanged, m_model, &Model::setBirdHeight);
+
+	QObject::connect(m_model, &Model::detectedCollisions, this, [this] {
+		emit gameOver();
+	});
 
 	QObject::connect(this, &Driver::startedChanged, this, [this] {
 		m_timer->start(timeoutInMS);
@@ -69,6 +80,14 @@ void Driver::setGapHeight(int newGapHeight)
 	}
 }
 
+void Driver::setObstableWidth(int newObstacleWidth)
+{
+	if (m_obstacleWidth != newObstacleWidth) {
+		m_obstacleWidth = newObstacleWidth;
+		emit obstableWidthChanged(m_obstacleWidth);
+	}
+}
+
 void Driver::setMaxNumberOfObstacles(int newMaxNumObstacles)
 {
 	if (m_maxNumberOfObstacles != newMaxNumObstacles) {
@@ -89,6 +108,22 @@ void Driver::setBirdY(int newY)
 {
 	if (m_birdY != newY) {
 		m_birdY = newY;
-		emit birdXChanged(m_birdY);
+		emit birdYChanged(m_birdY);
+	}
+}
+
+void Driver::setBirdWidth(int newWidth)
+{
+	if (m_birdWidth != newWidth) {
+		m_birdWidth = newWidth;
+		emit birdWidthChanged(m_birdWidth);
+	}
+}
+
+void Driver::setBirdHeight(int newHeight)
+{
+	if (m_birdHeight != newHeight) {
+		m_birdHeight = newHeight;
+		emit birdWidthChanged(m_birdHeight);
 	}
 }

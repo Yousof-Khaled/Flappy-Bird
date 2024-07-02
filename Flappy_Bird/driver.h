@@ -20,8 +20,11 @@ class Driver : public QObject
 	Q_PROPERTY(int windowHeight READ windowHeight WRITE setWindowHeight NOTIFY windowHeightChanged FINAL)
 	Q_PROPERTY(int gapHeight READ gapHeight WRITE setGapHeight NOTIFY gapHeightChanged FINAL) // obstacle gap height
 
-	Q_PROPERTY(int birdX WRITE setBirdX NOTIFY birdXChanged FINAL);
-	Q_PROPERTY(int birdY WRITE setBirdY NOTIFY birdYChanged FINAL)
+	Q_PROPERTY(int birdX MEMBER m_birdX WRITE setBirdX NOTIFY birdXChanged FINAL)
+	Q_PROPERTY(int birdY MEMBER m_birdY WRITE setBirdY NOTIFY birdYChanged FINAL)
+	Q_PROPERTY(int birdWidth MEMBER m_birdWidth WRITE setBirdWidth NOTIFY birdWidthChanged FINAL)
+	Q_PROPERTY(int birdHeight MEMBER m_birdHeight WRITE setBirdHeight NOTIFY birdHeightChanged FINAL)
+	Q_PROPERTY(int obstableWidth MEMBER m_obstacleWidth WRITE setObstableWidth NOTIFY obstableWidthChanged FINAL)
 
 public:
 	explicit Driver(QObject *parent = nullptr);
@@ -39,6 +42,8 @@ public:
 	int gapHeight() { return m_gapHeight; }
 	void setGapHeight(int newGapHeight);
 
+	void setObstableWidth(int newObstacleWidth);
+
 	Model* model() { return m_model; }
 
 	int maxNumberOfObstacles() { return m_maxNumberOfObstacles; }
@@ -46,6 +51,8 @@ public:
 
 	void setBirdX(int newX);
 	void setBirdY(int newY);
+	void setBirdWidth(int newWidth);
+	void setBirdHeight(int newHeight);
 
 signals:
 	void startedChanged(bool s);
@@ -53,9 +60,14 @@ signals:
 	void modelChanged();
 	void windowHeightChanged(int newWindowHeight);
 	void gapHeightChanged(int newGapHeight);
+	void obstableWidthChanged(int newObstacleWidth);
 	void maxNumberOfObstaclesChanged(int newMaxNumObstacles);
 	void birdXChanged(int x);
 	void birdYChanged(int y);
+	void birdWidthChanged(int newWidth);
+	void birdHeightChanged(int newHeight);
+
+	void gameOver();
 
 private:
 	QTimer *m_timer;
@@ -72,6 +84,13 @@ private:
 	int m_windowRightmost;
 	int m_windowHeight;
 	int m_gapHeight;
+
+	int m_obstacleWidth;
+
+	int m_birdX;
+	int m_birdY;
+	int m_birdWidth;
+	int m_birdHeight;
 };
 
 #endif // DRIVER_H
