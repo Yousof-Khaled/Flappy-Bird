@@ -3,7 +3,7 @@
 Model::Model(QObject *parent)
 	: QAbstractListModel(parent)
 {
-
+	QObject::connect(this, &Model::shouldCheckForCollision, this, &Model::checkForCollision);
 }
 
 int Model::rowCount(const QModelIndex &parent) const
@@ -65,9 +65,16 @@ void Model::trace()
 void Model::moveLeft()
 {
 	for (auto& o: obstacles) {
-		o.x -= 1;
+		o.x -= m_obstacleStep;
+		if ((o.x + m_obstacleWidth < m_birdX) && !o.passed) {
+			o.passed = true;
+			qInfo() << "bird x : " << m_birdX;
+			qInfo() << "x : " << o.x << ", width : " << m_obstacleWidth << ", x	+ width : " << o.x + m_obstacleWidth;
+			qInfo() << "passed an obstacle";
+		}
 	}
-	trace();
+	// trace();
+	emit shouldCheckForCollision();
 	emit dataChanged(createIndex(0, 0), createIndex(int(obstacles.size()) - 1, 0), {XPositionRole});
 }
 
@@ -96,6 +103,14 @@ void Model::addLast()
 	endInsertRows();
 }
 
+bool Model::isCollided(int bird_x1, int bird_x2, int bird_y1, int bird_y2, int model_x1, int model_gap_y1) {
+	int model_x2 = model_x1 + m_obstacleWidth;
+	int model_gap_y2 = model_gap_y1 + m_gapHeight;
+
+	return (bird_y1 <= model_gap_y1 || bird_y2 >= model_gap_y2) &&
+			((model_x1 <= bird_x1 && bird_x1 <= model_x2) || (model_x1 <= bird_x2 && bird_x2 <= model_x2));
+}
+
 void Model::setWindowRightMost(int rightMostPoint)
 {
 	if (m_windowRightmost != rightMostPoint) {
@@ -117,10 +132,64 @@ void Model::setGapHeight(int newGapHeight)
 	}
 }
 
+void Model::setObstableWidth(int newObstacleWidth)
+{
+	if (m_obstacleWidth != newObstacleWidth) {
+		m_obstacleWidth = newObstacleWidth;
+	}
+}
+
 void Model::setMaxNumberOfObstacles(int newNumObstacles)
 {
 	if (m_maxNumberOfObstacles != newNumObstacles) {
 		m_maxNumberOfObstacles = newNumObstacles;
+	}
+}
+
+void Model::setBirdX(int newX)
+{
+	if (m_birdX != newX) {
+		m_birdX = newX;
+	}
+}
+
+void Model::setBirdY(int newY)
+{
+	if (m_birdY != newY) {
+		m_birdY = newY;
+		emit shouldCheckForCollision();
+	}
+}
+
+void Model::setBirdWidth(int newWidth)
+{
+	if (m_birdWidth != newWidth) {
+		m_birdWidth = newWidth;
+	}
+}
+
+void Model::setBirdHeight(int newHeight)
+{
+	if (m_birdHeight != newHeight) {
+		m_birdHeight = newHeight;
+	}
+}
+
+void Model::checkForCollision()
+{
+	static int collisions = 0;
+	for (auto& obstacle : obstacles) {
+		if (obstacle.passed) continue;
+
+		if (isCollided(m_birdX,
+					   m_birdX + m_birdWidth,
+					   m_birdY,
+					   m_birdY + m_birdHeight,
+					   obstacle.x,
+					   obstacle.gapY)) {
+			qInfo() << "collision detected : " << collisions++;
+			emit detectedCollisions();
+		}
 	}
 }
 
