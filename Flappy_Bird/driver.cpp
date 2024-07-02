@@ -39,7 +39,12 @@ Driver::Driver(QObject *parent)
 	});
 
 	QObject::connect(this, &Driver::startedChanged, this, [this] {
-		m_timer->start(timeoutInMS);
+		if (m_started) {
+			m_timer->start(timeoutInMS);
+		}
+		else {
+			m_timer->stop();
+		}
 	});
 }
 

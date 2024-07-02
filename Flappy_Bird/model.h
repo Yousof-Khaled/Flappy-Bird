@@ -49,6 +49,8 @@ public:
 
 	bool isCollided(int bird_x1, int bird_x2, int bird_y1, int bird_y2, int model_x, int model_gap_y);
 
+	void eraseObstacles();
+
 public slots:
 	void setWindowRightMost(int rightMostPoint);
 	void setWindowHeight(int newWindowHeight);

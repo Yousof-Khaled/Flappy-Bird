@@ -111,6 +111,16 @@ bool Model::isCollided(int bird_x1, int bird_x2, int bird_y1, int bird_y2, int m
 			((model_x1 <= bird_x1 && bird_x1 <= model_x2) || (model_x1 <= bird_x2 && bird_x2 <= model_x2));
 }
 
+void Model::eraseObstacles()
+{
+	if (obstacles.empty())
+		return;
+
+	beginRemoveRows(QModelIndex(), 0, (int)obstacles.size() - 1);
+	obstacles.clear();
+	endRemoveRows();
+}
+
 void Model::setWindowRightMost(int rightMostPoint)
 {
 	if (m_windowRightmost != rightMostPoint) {
