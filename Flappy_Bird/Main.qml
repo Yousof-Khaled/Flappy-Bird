@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Layouts
 import Flappy_Bird
 
 Window {
@@ -12,28 +13,93 @@ Window {
 
         function gameOver() {
             console.log("game over")
+
+            bird.stop()
+            needsReset = true
+
+            Driver.started = false
+        }
+
+        function resetGame() {
+            Driver.resetGame()
+            bird.reset()
         }
 
         property int obstacleWidth: 20
+        property bool needsReset: false
 
         anchors.fill: parent
+
+        Text {
+            id: startGameText
+
+            anchors.centerIn: parent
+            visible: !Driver.started && !rootItem.needsReset
+            text: qsTr("Press space or click the mouse to start")
+            font.pixelSize: 15
+            font.bold: true
+        }
+
+        ColumnLayout {
+            id: gameOverBanner
+
+            anchors.centerIn: parent
+            z: 1
+            spacing: 10
+            visible: rootItem.needsReset
+
+            Item {
+                Layout.preferredWidth: background.width
+                Layout.preferredHeight: background.height
+
+                Rectangle {
+                    id: background
+
+                    color: "lightblue"
+                    width: gameOverText.implicitWidth + 30
+                    height: gameOverText.implicitHeight + 30
+                    border.width: 10
+                    border.color: "black"
+                }
+
+                Text {
+                    id: gameOverText
+
+                    anchors.centerIn: parent
+                    text: qsTr("GAME OVER")
+                    font.pixelSize: 60
+                    font.bold: true
+                }
+            }
+            Text {
+                id: restartGameText
+
+                Layout.alignment: Qt.AlignHCenter
+                text: qsTr("Press space or click the mouse to continue")
+            }
+        }
 
         Rectangle {
             id: bird
 
             function jumpUp() {
-                if (!Driver.started) {
-                    Driver.started = true
-                }
-
                 falling.stop()
                 jump.restart()
+            }
+
+            function stop() {
+                jump.stop()
+                falling.stop()
+            }
+
+            function reset() {
+                y = rootItem.height / 4
             }
 
             width: 20
             height: 20
             color: "red"
-            y: rootItem.height / 4
+            // y: rootItem.height / 4
             x: 50
 
             NumberAnimation {
@@ -77,13 +143,30 @@ Window {
                     rootItem.gameOver()
                 }
             }
+
+            Component.onCompleted: {
+                reset()
+            }
+        }
+
+        function clickAction() {
+            if (needsReset) {
+                needsReset = false
+                resetGame()
+                return
+            }
+
+            if (!Driver.started) {
+                Driver.started = true
+            }
+            bird.jumpUp()
         }
 
         MouseArea {
             anchors.fill: parent
 
             onClicked: {
-                bird.jumpUp()
+                rootItem.clickAction()
             }
         }
 
@@ -114,7 +197,7 @@ Window {
 
         Keys.onPressed: (event) => {
             if (event.key === Qt.Key_Space) {
-                bird.jumpUp()
+                clickAction()
             }
         }
 

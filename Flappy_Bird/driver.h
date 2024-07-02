@@ -54,6 +54,10 @@ public:
 	void setBirdWidth(int newWidth);
 	void setBirdHeight(int newHeight);
 
+	Q_INVOKABLE void resetGame() {
+		m_model->eraseObstacles();
+	}
+
 signals:
 	void startedChanged(bool s);
 	void windowRightmostChanged(int rightMostPoint);
