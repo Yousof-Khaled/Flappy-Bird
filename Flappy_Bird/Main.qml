@@ -99,8 +99,9 @@ Window {
             width: 20
             height: 20
             color: "red"
-            // y: rootItem.height / 4
             x: 50
+            // y: rootItem.height / 4
+            z: 1
 
             NumberAnimation {
                 id: falling
@@ -144,8 +145,13 @@ Window {
                 }
             }
 
-            Component.onCompleted: {
+            Component.onCompleted: {            
                 reset()
+
+                Driver.birdWidth = width
+                Driver.birdHeight = height
+                Driver.birdX = x;
+                Driver.birdY = y;
             }
         }
 
@@ -210,11 +216,6 @@ Window {
         }
 
         Component.onCompleted: {
-            Driver.birdWidth = bird.width
-            Driver.birdHeight = bird.height
-            Driver.birdX = bird.x;
-            Driver.birdY = bird.y;
-
             Driver.maxNumberOfObstacles = 10
             Driver.gapHeight = 100
             Driver.obstableWidth = rootItem.obstacleWidth

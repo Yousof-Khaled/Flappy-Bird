@@ -68,9 +68,9 @@ void Model::moveLeft()
 		o.x -= m_obstacleStep;
 		if ((o.x + m_obstacleWidth < m_birdX) && !o.passed) {
 			o.passed = true;
-			qInfo() << "bird x : " << m_birdX;
-			qInfo() << "x : " << o.x << ", width : " << m_obstacleWidth << ", x	+ width : " << o.x + m_obstacleWidth;
-			qInfo() << "passed an obstacle";
+			// qInfo() << "bird x : " << m_birdX;
+			// qInfo() << "x : " << o.x << ", width : " << m_obstacleWidth << ", x	+ width : " << o.x + m_obstacleWidth;
+			// qInfo() << "passed an obstacle";
 		}
 	}
 	// trace();

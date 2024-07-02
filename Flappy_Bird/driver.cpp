@@ -129,6 +129,6 @@ void Driver::setBirdHeight(int newHeight)
 {
 	if (m_birdHeight != newHeight) {
 		m_birdHeight = newHeight;
-		emit birdWidthChanged(m_birdHeight);
+		emit birdHeightChanged(m_birdHeight);
 	}
 }
