@@ -185,13 +185,6 @@ Window {
                         break
                     }
 
-                    // if (wing === "up")
-                    //     ret += "yellowbird-upflap.png"
-                    // else if (wing === "mid")
-                    //     ret += "yellowbird-midflap.png"
-                    // else
-                    //     ret += "yellowbird-downflap.png"
-
                     return ret
                 }
 
