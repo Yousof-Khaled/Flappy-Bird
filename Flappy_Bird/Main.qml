@@ -94,6 +94,7 @@ Window {
 
             function reset() {
                 y = rootItem.height / 4
+                birdImage.state = "will_start"
             }
 
             width: 20
@@ -114,6 +115,10 @@ Window {
                 easing.type: Easing.InCirc
                 from: bird.y
                 to: rootItem.height - bird.height
+
+                onStarted: {
+                    birdImage.state = "falling"
+                }
             }
 
 
@@ -127,6 +132,10 @@ Window {
                     easing.type: Easing.OutCirc
                     from: bird.y
                     to: Math.max(bird.y - 70, 0)
+                }
+
+                onStarted: {
+                    birdImage.state = "jumping"
                 }
 
                 onFinished: {
@@ -152,6 +161,109 @@ Window {
                 Driver.birdHeight = height
                 Driver.birdX = x;
                 Driver.birdY = y;
+            }
+
+            Image {
+                id: birdImage
+
+                property string prefix: "assets/sprites/"
+                property var sources: ["yellowbird-downflap.png", "yellowbird-midflap.png", "yellowbird-upflap.png"]
+
+                function getFrame(wing) {
+                    var ret = prefix
+                    if (wing === "up")
+                        ret += "yellowbird-upflap.png"
+                    else if (wing === "mid") {
+                        ret += "yellowbird-midflap.png"
+                    }
+                    else {
+                        ret += "yellowbird-downflap.png"
+                    }
+
+                    return ret
+                }
+
+                anchors.fill: parent
+                source: prefix + sources[1]
+                fillMode: Image.PreserveAspectFit
+
+                state: "will_start"
+                states: [
+                    State {
+                        name: "will_start"
+                        PropertyChanges {
+                            target: birdImage
+                            rotation: 0
+                        }
+                    },
+                    State {
+                        name: "jumping"
+                        PropertyChanges {
+                            target: birdImage
+                            rotation: -45
+                        }
+                    },
+                    State {
+                        name: "falling"
+                    }
+                ]
+
+                onStateChanged: {
+                    if (state === "falling") {
+                        rotateDownwards.start()
+                    }
+                    else {
+                        rotateDownwards.stop()
+                    }
+                }
+
+                RotationAnimation{
+                    id: rotateDownwards
+
+                    target: birdImage
+                    duration: 500
+                    from: birdImage.rotation
+                    to: 90
+                }
+
+                property int pausingBetweenFrames: 100
+
+                SequentialAnimation { // todo use SpriteSequence?
+                    running: birdImage.rotation < 70
+                    loops: Animation.Infinite
+
+                    ScriptAction {
+                        script: {
+                            birdImage.source = birdImage.getFrame("mid")
+                        }
+                    }
+
+                    PauseAnimation { duration: birdImage.pausingBetweenFrames }
+
+                    ScriptAction {
+                        script: {
+                            birdImage.source = birdImage.getFrame("down")
+                        }
+                    }
+
+                    PauseAnimation { duration: birdImage.pausingBetweenFrames }
+
+                    ScriptAction {
+                        script: {
+                            birdImage.source = birdImage.getFrame("mid")
+                        }
+                    }
+
+                    PauseAnimation { duration: birdImage.pausingBetweenFrames }
+
+                    ScriptAction {
+                        script: {
+                            birdImage.source = birdImage.getFrame("up")
+                        }
+                    }
+
+                    PauseAnimation { duration: birdImage.pausingBetweenFrames }
+                }
             }
         }
 
