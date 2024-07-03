@@ -25,7 +25,7 @@ Window {
             bird.reset()
         }
 
-        property int obstacleWidth: 20
+        property int obstacleWidth: 30
         property bool needsReset: false
 
         anchors.fill: parent
@@ -97,8 +97,8 @@ Window {
                 birdImage.state = "will_start"
             }
 
-            width: 20
-            height: 20
+            width: 30
+            height: 30
             color: "red"
             x: 50
             // y: rootItem.height / 4
@@ -290,7 +290,7 @@ Window {
                 }
 
                 Rectangle {
-                    width: 20
+                    width: rootItem.obstacleWidth
                     height: Driver.windowHeight - y
 
                     color: "blue"
@@ -316,7 +316,7 @@ Window {
 
         Component.onCompleted: {
             Driver.maxNumberOfObstacles = 10
-            Driver.gapHeight = 100
+            Driver.gapHeight = 130
             Driver.obstableWidth = rootItem.obstacleWidth
             forceActiveFocus()
         }
