@@ -171,14 +171,26 @@ Window {
 
                 function getFrame(wing) {
                     var ret = prefix
-                    if (wing === "up")
+                    switch (wing) {
+                    case "up":
                         ret += "yellowbird-upflap.png"
-                    else if (wing === "mid") {
+                        break
+                    case "mid":
                         ret += "yellowbird-midflap.png"
-                    }
-                    else {
+                        break
+                    case "down":
                         ret += "yellowbird-downflap.png"
+                        break
+                    default:
+                        break
                     }
+
+                    // if (wing === "up")
+                    //     ret += "yellowbird-upflap.png"
+                    // else if (wing === "mid")
+                    //     ret += "yellowbird-midflap.png"
+                    // else
+                    //     ret += "yellowbird-downflap.png"
 
                     return ret
                 }
@@ -229,36 +241,18 @@ Window {
                 property int pausingBetweenFrames: 100
 
                 SequentialAnimation { // todo use SpriteSequence?
+                    id: wingsAnimation
+
+                    property int selectedFrame: 0
+                    property var animationWingPlacements: ["mid", "down", "mid", "up"]
+
                     running: birdImage.rotation < 70
                     loops: Animation.Infinite
 
                     ScriptAction {
                         script: {
-                            birdImage.source = birdImage.getFrame("mid")
-                        }
-                    }
-
-                    PauseAnimation { duration: birdImage.pausingBetweenFrames }
-
-                    ScriptAction {
-                        script: {
-                            birdImage.source = birdImage.getFrame("down")
-                        }
-                    }
-
-                    PauseAnimation { duration: birdImage.pausingBetweenFrames }
-
-                    ScriptAction {
-                        script: {
-                            birdImage.source = birdImage.getFrame("mid")
-                        }
-                    }
-
-                    PauseAnimation { duration: birdImage.pausingBetweenFrames }
-
-                    ScriptAction {
-                        script: {
-                            birdImage.source = birdImage.getFrame("up")
+                            wingsAnimation.selectedFrame = (wingsAnimation.selectedFrame + 1) % 4
+                            birdImage.source = birdImage.getFrame(wingsAnimation.animationWingPlacements[wingsAnimation.selectedFrame])
                         }
                     }
 
