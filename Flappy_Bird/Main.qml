@@ -90,6 +90,8 @@ Window {
             function stop() {
                 jump.stop()
                 falling.stop()
+                wingsAnimation.stop()
+                rotateDownwards.stop()
             }
 
             function reset() {
@@ -250,6 +252,10 @@ Window {
                     }
 
                     PauseAnimation { duration: birdImage.pausingBetweenFrames }
+
+                    onStopped: {
+                        birdImage.source = birdImage.getFrame("mid")
+                    }
                 }
             }
         }
