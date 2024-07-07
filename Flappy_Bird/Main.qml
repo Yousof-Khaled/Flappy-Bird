@@ -25,7 +25,7 @@ Window {
             bird.reset()
         }
 
-        property int obstacleWidth: 30
+        property int obstacleWidth: 40
         property bool needsReset: false
 
         anchors.fill: parent
@@ -99,9 +99,9 @@ Window {
                 birdImage.state = "will_start"
             }
 
-            width: 30
-            height: 30
-            color: "red"
+            width: 40
+            height: 40
+            color: "transparent"
             x: 50
             // y: rootItem.height / 4
             z: 1
