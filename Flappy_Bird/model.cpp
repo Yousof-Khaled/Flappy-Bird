@@ -103,12 +103,76 @@ void Model::addLast()
 	endInsertRows();
 }
 
+double Model::euclidianDistance(int bird_midPoint_x, int bird_midPoint_y, int pointX, int pointY)
+{
+	int dx = abs(pointX - bird_midPoint_x);
+	int dy = abs(pointY - bird_midPoint_y);
+
+	return std::sqrt(dx * dx + dy * dy);
+}
+
+/*
+........|##########|............
+.  (2) .|## wall ##|..	 (2) ...
+........|##########|............
+--------|----------|------------
+.. (3)..|.. (1) ...|..   (3)....
+........|..........|............
+--------|----------|------------
+........|##########|............
+.. (2)..|## wall ##|.... (2) ...
+........|##########|............
+
+*/
+
+
+
 bool Model::isCollided(int bird_x1, int bird_x2, int bird_y1, int bird_y2, int model_x1, int model_gap_y1) {
 	int model_x2 = model_x1 + m_obstacleWidth;
 	int model_gap_y2 = model_gap_y1 + m_gapHeight;
 
-	return (bird_y1 <= model_gap_y1 || bird_y2 >= model_gap_y2) &&
-			((model_x1 <= bird_x1 && bird_x1 <= model_x2) || (model_x1 <= bird_x2 && bird_x2 <= model_x2));
+	int bird_midPoint_X = (bird_x1 + bird_x2) / 2;
+	int bird_midPoint_Y = (bird_y1 + bird_y2) / 2;
+	int collision_radius = (bird_x2 - bird_x1) / 2;
+
+	if (model_x1 <= bird_midPoint_X && bird_midPoint_X <= model_x2 &&
+			model_gap_y1 <= bird_midPoint_Y && bird_midPoint_Y <= model_gap_y2) { // (1)
+
+		// qInfo() << "here 1";
+
+		return bird_midPoint_Y - collision_radius <= model_gap_y1
+				|| bird_midPoint_Y + collision_radius >= model_gap_y2;
+	}
+	else if (model_gap_y1 <= bird_midPoint_Y && bird_midPoint_Y <= model_gap_y2) { // (3)
+		int wall_1_corner_1_x = model_x1, wall_1_corner_1_y = model_gap_y1;
+		int wall_1_corner_2_x = model_x2, wall_1_corner_2_y = model_gap_y1;
+
+		int wall_2_corner_1_x = model_x1, wall_2_corner_1_y = model_gap_y2;
+		int wall_2_corner_2_x = model_x2, wall_2_corner_2_y = model_gap_y2;
+
+		double dist = std::min({euclidianDistance(bird_midPoint_X, bird_midPoint_Y, wall_1_corner_1_x, wall_1_corner_1_y),
+							   euclidianDistance(bird_midPoint_X, bird_midPoint_Y, wall_1_corner_2_x, wall_1_corner_2_y),
+							   euclidianDistance(bird_midPoint_X, bird_midPoint_Y, wall_2_corner_1_x, wall_2_corner_1_y),
+							   euclidianDistance(bird_midPoint_X, bird_midPoint_Y, wall_2_corner_2_x, wall_2_corner_2_y)});
+
+		// qInfo() << "here 3";
+
+		return dist < double(collision_radius);
+	}
+	else { // (2)
+		if (bird_midPoint_X <= model_x1) {
+			// qInfo() << "here 2";
+
+			return model_x1 - bird_midPoint_X < collision_radius;
+		}
+		else if (model_x2 <= bird_midPoint_X){
+			return bird_midPoint_X - model_x2 < collision_radius;
+		}
+	}
+
+	qInfo() << "here 4";
+
+	return false;
 }
 
 void Model::eraseObstacles()
@@ -200,6 +264,7 @@ void Model::checkForCollision()
 			qInfo() << "collision detected : " << collisions++;
 			emit detectedCollisions();
 		}
+		break;
 	}
 }
 
