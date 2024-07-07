@@ -108,6 +108,10 @@ Window {
 
             NumberAnimation {
                 id: falling
+
+                property alias birdY: bird.y
+                property int start_y: bird.y
+
                 target: bird
                 property: "y"
                 duration: {
@@ -120,6 +124,15 @@ Window {
 
                 onStarted: {
                     birdImage.state = "falling"
+                }
+
+                onBirdYChanged: {
+                    if (!falling.running)
+                        return
+
+                    if (birdY >= start_y + 70 && !rotateDownwards.running && rotateDownwards.shouldRun) {
+                        rotateDownwards.start()
+                    }
                 }
             }
 
@@ -141,6 +154,7 @@ Window {
                 }
 
                 onFinished: {
+                    falling.start_y = bird.y
                     falling.start()
                 }
             }
@@ -193,6 +207,7 @@ Window {
                 anchors.fill: parent
                 source: prefix + sources[1]
                 fillMode: Image.PreserveAspectFit
+                rotation: -45
 
                 state: "will_start"
                 states: [
@@ -216,19 +231,24 @@ Window {
                 ]
 
                 onStateChanged: {
-                    if (state === "falling") {
-                        rotateDownwards.start()
+                    if (state === "will_start") {
+                        rotation = -45
                     }
-                    else {
+
+                    if (state !== "falling") {
                         rotateDownwards.stop()
+                        if (state === "jumping")
+                            rotation = -45
                     }
                 }
 
                 RotationAnimation{
                     id: rotateDownwards
 
+                    property bool shouldRun: birdImage.rotation < to
+
                     target: birdImage
-                    duration: 500
+                    duration: 200
                     from: birdImage.rotation
                     to: 90
                 }
