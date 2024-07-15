@@ -11,6 +11,11 @@ Window {
     Item {
         id: rootItem
 
+        Image {
+            source: "assets/sprites/background-day.png"
+            anchors.fill: parent
+        }
+
         function gameOver() {
             console.log("game over")
 
@@ -120,7 +125,7 @@ Window {
 
                 easing.type: Easing.InCirc
                 from: bird.y
-                to: rootItem.height - bird.height
+                to: rootItem.height - bird.height - base.height
 
                 onStarted: {
                     birdImage.state = "falling"
@@ -165,7 +170,7 @@ Window {
 
             onYChanged: {
                 Driver.birdY = y;
-                if (y + height === rootItem.height) {
+                if (y + height === rootItem.height - base.height) {
                     rootItem.gameOver()
                 }
             }
@@ -326,6 +331,21 @@ Window {
             }
         }
 
+        Item {
+            id: base
+
+            width: parent.width
+            height: 70
+            y: parent.height - height
+
+            Image {
+                id: baseImage
+
+                anchors.fill: parent
+                source: "assets/sprites/base.png"
+            }
+        }
+
         Keys.onPressed: (event) => {
             if (event.key === Qt.Key_Space) {
                 clickAction()
@@ -337,7 +357,7 @@ Window {
         }
 
         onHeightChanged: {
-            Driver.windowHeight = height
+            Driver.windowHeight = height - base.height
         }
 
         Component.onCompleted: {
