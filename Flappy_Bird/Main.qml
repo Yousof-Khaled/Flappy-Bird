@@ -3,7 +3,7 @@ import QtQuick.Layouts
 import Flappy_Bird
 
 Window {
-    width: 640
+    width: 320
     height: 480
     visible: true
     title: qsTr("Flappy Bird")
@@ -44,7 +44,7 @@ Window {
             id: gameOverBanner
 
             anchors.centerIn: parent
-            z: 1
+            z: 2
             spacing: 10
             visible: rootItem.needsReset
 
@@ -67,7 +67,7 @@ Window {
 
                     anchors.centerIn: parent
                     text: qsTr("GAME OVER")
-                    font.pixelSize: 60
+                    font.pixelSize: 40
                     font.bold: true
                 }
             }

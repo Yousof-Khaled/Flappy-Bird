@@ -135,6 +135,10 @@ bool Model::isCollided(int bird_x1, int bird_x2, int bird_y1, int bird_y2, int m
 	int bird_midPoint_Y = (bird_y1 + bird_y2) / 2;
 	int collision_radius = (bird_x2 - bird_x1) / 2;
 
+	// allow colliding with a part of the image instead of colliding
+	// with air as the image is not circular
+	collision_radius -= collision_radius / 3;
+
 	if (model_x1 <= bird_midPoint_X && bird_midPoint_X <= model_x2 &&
 			model_gap_y1 <= bird_midPoint_Y && bird_midPoint_Y <= model_gap_y2) { // (1)
 
