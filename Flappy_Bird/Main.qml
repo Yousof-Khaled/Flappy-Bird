@@ -11,6 +11,11 @@ Window {
     Item {
         id: rootItem
 
+        Image {
+            source: "assets/sprites/background-day.png"
+            anchors.fill: parent
+        }
+
         function gameOver() {
             console.log("game over")
 
@@ -120,7 +125,7 @@ Window {
 
                 easing.type: Easing.InCirc
                 from: bird.y
-                to: rootItem.height - bird.height
+                to: rootItem.height - bird.height - base.height
 
                 onStarted: {
                     birdImage.state = "falling"
@@ -165,7 +170,7 @@ Window {
 
             onYChanged: {
                 Driver.birdY = y;
-                if (y + height === rootItem.height) {
+                if (y + height === rootItem.height - base.height) {
                     rootItem.gameOver()
                 }
             }
@@ -310,18 +315,77 @@ Window {
                     width: rootItem.obstacleWidth
                     height: model.gapY
 
-                    color: "blue"
+                    color: "transparent"
                     y: 0
                     x: model.X
+
+                    Image {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        height: implicitHeight
+                        rotation: 180
+                        source: "assets/sprites/pipe-green.png"
+                    }
                 }
 
                 Rectangle {
                     width: rootItem.obstacleWidth
                     height: Driver.windowHeight - y
 
-                    color: "blue"
+                    color: "transparent"
                     y: model.gapY + Driver.gapHeight
                     x: model.X
+
+                    Image {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        source: "assets/sprites/pipe-green.png"
+                    }
+                }
+            }
+        }
+
+        Item {
+            id: base
+
+            ListModel {
+                id: x_positions
+            }
+
+            function moveLeft() {
+                for (var i = 0 ; i < x_positions.count ; ++i) {
+                    x_positions.setProperty(i, "X", x_positions.get(i).X - 1)
+                }
+
+                if (x_positions.get(0).X + width == 0) {
+                    x_positions.remove(0, 1)
+                    x_positions.append({"X": base.width})
+                }
+            }
+
+            width: parent.width
+            height: 70
+            anchors.bottom: parent.bottom
+
+            Component.onCompleted: {
+                x_positions.append({"X": 0})
+                x_positions.append({"X": base.width})
+            }
+
+            Repeater {
+                id: movingFloor
+
+                model: x_positions
+                delegate: Image {
+                    id: baseImage
+
+                    x: model.X
+                    anchors.bottom: base.bottom
+                    height: base.height
+                    width: base.width
+                    source: "assets/sprites/base.png"
                 }
             }
         }
@@ -337,7 +401,7 @@ Window {
         }
 
         onHeightChanged: {
-            Driver.windowHeight = height
+            Driver.windowHeight = height - base.height
         }
 
         Component.onCompleted: {
@@ -352,6 +416,10 @@ Window {
 
             function onGameOver() {
                 rootItem.gameOver();
+            }
+
+            function onBaseMoveLeft() {
+                base.moveLeft()
             }
         }
     }

@@ -13,6 +13,7 @@ Driver::Driver(QObject *parent)
 		static int track = 0;
 
 		m_model->moveLeft();
+		emit baseMoveLeft();
 
 		track++;
 		if (track % 200 == 0) {
