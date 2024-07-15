@@ -25,6 +25,7 @@ qt_add_qml_module(appFlappy_Bird
 	assets/sprites/yellowbird-upflap.png
 	assets/sprites/background-day.png
 	assets/sprites/base.png
+	assets/sprites/pipe-green.png
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

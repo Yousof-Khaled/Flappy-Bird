@@ -315,18 +315,34 @@ Window {
                     width: rootItem.obstacleWidth
                     height: model.gapY
 
-                    color: "blue"
+                    color: "transparent"
                     y: 0
                     x: model.X
+
+                    Image {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        height: implicitHeight
+                        rotation: 180
+                        source: "assets/sprites/pipe-green.png"
+                    }
                 }
 
                 Rectangle {
                     width: rootItem.obstacleWidth
                     height: Driver.windowHeight - y
 
-                    color: "blue"
+                    color: "transparent"
                     y: model.gapY + Driver.gapHeight
                     x: model.X
+
+                    Image {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        source: "assets/sprites/pipe-green.png"
+                    }
                 }
             }
         }
