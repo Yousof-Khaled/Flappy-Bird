@@ -334,15 +334,43 @@ Window {
         Item {
             id: base
 
+            ListModel {
+                id: x_positions
+            }
+
+            function moveLeft() {
+                for (var i = 0 ; i < x_positions.count ; ++i) {
+                    x_positions.setProperty(i, "X", x_positions.get(i).X - 1)
+                }
+
+                if (x_positions.get(0).X + width == 0) {
+                    x_positions.remove(0, 1)
+                    x_positions.append({"X": base.width})
+                }
+            }
+
             width: parent.width
             height: 70
-            y: parent.height - height
+            anchors.bottom: parent.bottom
 
-            Image {
-                id: baseImage
+            Component.onCompleted: {
+                x_positions.append({"X": 0})
+                x_positions.append({"X": base.width})
+            }
 
-                anchors.fill: parent
-                source: "assets/sprites/base.png"
+            Repeater {
+                id: movingFloor
+
+                model: x_positions
+                delegate: Image {
+                    id: baseImage
+
+                    x: model.X
+                    anchors.bottom: base.bottom
+                    height: base.height
+                    width: base.width
+                    source: "assets/sprites/base.png"
+                }
             }
         }
 
@@ -372,6 +400,10 @@ Window {
 
             function onGameOver() {
                 rootItem.gameOver();
+            }
+
+            function onBaseMoveLeft() {
+                base.moveLeft()
             }
         }
     }

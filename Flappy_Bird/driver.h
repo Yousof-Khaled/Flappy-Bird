@@ -70,6 +70,7 @@ signals:
 	void birdYChanged(int y);
 	void birdWidthChanged(int newWidth);
 	void birdHeightChanged(int newHeight);
+	void baseMoveLeft();
 
 	void gameOver();
 
